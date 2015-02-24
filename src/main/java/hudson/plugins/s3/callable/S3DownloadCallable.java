@@ -14,12 +14,12 @@ import java.io.PrintStream;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
-public class S3DownloadCallable extends AbstractS3Callable implements FileCallable<FingerprintRecord> 
+public class S3DownloadCallable extends AbstractS3Callable implements FileCallable<FingerprintRecord>
 {
     private static final long serialVersionUID = 1L;
     final private Destination dest;
     final transient private PrintStream log;
-    
+
     public S3DownloadCallable(AmazonS3Client client, Destination dest, PrintStream console)
     {
         super(client);
@@ -27,12 +27,13 @@ public class S3DownloadCallable extends AbstractS3Callable implements FileCallab
         this.log = console;
     }
 
-    public FingerprintRecord invoke(File file, VirtualChannel channel) throws IOException, InterruptedException 
+    public FingerprintRecord invoke(File file, VirtualChannel channel) throws IOException, InterruptedException
     {
         GetObjectRequest req = new GetObjectRequest(dest.bucketName, dest.objectName);
         ObjectMetadata md = getClient().getObject(req, file);
 
-        return new FingerprintRecord(true, dest.bucketName, file.getName(), md.getETag());
+        return new FingerprintRecord(true, dest.userBucketName, dest.fileName, md.getETag());
+
     }
 
 }
